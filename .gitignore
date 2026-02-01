@@ -7,8 +7,7 @@ Thumbs.db
 *.iml
 
 # CI artifacts (generated)
-ci_artifacts/*.json
-ci_artifacts/*.md
+ci_artifacts/*
 
 # Python
 __pycache__/
@@ -22,3 +21,16 @@ node_modules/
 .dart_tool/
 build/
 
+# PR-2 artifacts (generated evidence)
+artifacts/
+
+# Node app build artifacts
+apps/**/node_modules/
+apps/**/dist/
+apps/**/src/**/*.js
+apps/**/src/**/*.d.ts
+apps/**/src/**/*.map
+apps/**/prisma.config.js
+apps/**/prisma.config.d.ts
+apps/**/prisma.config.*.map
+apps/**/.env

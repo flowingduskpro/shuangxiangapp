@@ -166,9 +166,9 @@ def _check_python_requirements_pinned(req_path: Path) -> bool:
     return all(_python_req_pinned(l) for l in lines)
 
 
-def _detect_node_runtime_proof(package_dir: Path, deps: List[Tuple[str, str, str]]) -> List[str]:
+def _detect_node_runtime_proof(project_dir: Path, deps: List[Tuple[str, str, str]]) -> List[str]:
     # Only if node exists and node_modules exists; otherwise N/A.
-    node_modules = package_dir / "node_modules"
+    node_modules = project_dir / "node_modules"
     if not node_modules.exists():
         return ["- runtime load-path proof: N/A (node_modules not present)"]
 
@@ -182,8 +182,13 @@ def _detect_node_runtime_proof(package_dir: Path, deps: List[Tuple[str, str, str
     lines: List[str] = ["- runtime load-path proof:"]
     for name in to_check:
         # Use node -p require.resolve; capture path.
-        cmd = f'{node} -p "require.resolve(\"{name}\")"'
-        rc, out, err = _run_shell(cmd, cwd=package_dir)
+        cmd = [
+            "node",
+            "-p",
+            # Quote the package name so scoped packages like @nestjs/common work.
+            f"require.resolve('{name}')",
+        ]
+        rc, out, err = _run_shell(cmd, cwd=project_dir)
         if rc == 0:
             lines.append(f"  - `{name}` resolved to `{out.strip()}`")
         else:
@@ -263,9 +268,12 @@ def _audit_node(package_json_paths: List[Path]) -> Tuple[List[str], List[Violati
 
     lock_candidates = ["package-lock.json", "pnpm-lock.yaml", "yarn.lock"]
 
+    # Workspace-friendly: if repo root has a lockfile, allow nested package.json to rely on it.
+    root_lock = _has_any_lockfile(REPO_ROOT, lock_candidates)
+
     for p in sorted(package_json_paths, key=_rel):
         d = p.parent
-        lock = _has_any_lockfile(d, lock_candidates)
+        lock = _has_any_lockfile(d, lock_candidates) or root_lock
         ok = lock is not None
         pkg = _parse_package_json(p)
         deps = _direct_deps_summary(pkg)

@@ -1,0 +1,43 @@
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: shuangxiang
+      POSTGRES_PASSWORD: shuangxiang
+      POSTGRES_DB: shuangxiang
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U shuangxiang -d shuangxiang"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  api:
+    image: node:22
+    working_dir: /repo
+    volumes:
+      - ./:/repo
+    environment:
+      PORT: "3000"
+      DATABASE_URL: "postgresql://shuangxiang:shuangxiang@postgres:5432/shuangxiang"
+      REDIS_URL: "redis://redis:6379"
+    command: ["bash", "-lc", "cd apps/api && npm ci && npm run prisma:migrate:deploy && npm run prisma:generate && npm run build && node dist/main.js"]
+    ports:
+      - "3000:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
