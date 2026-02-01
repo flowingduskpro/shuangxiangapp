@@ -45,4 +45,22 @@ python ci/scripts/preflight.py
 - Gate 2.1：PR 缺少必读确认记录（阅读声明/业务域/是否涉及关键变更）
 - Gate 2.2：当变更命中 `**/migrations/**`、`**/openapi*.{yml,yaml,json}`、`**/jobs/**` 时，必须同时修改 `memory_bank/architecture.md`
 
-> 注意：Structure Gate（行数/目录文件数/import 边界）、依赖审计、MVP scope 等属于后续步骤，本阶段不执行。
+> 注意：Structure Gate（行数/目录文件数/import 边界）属于后续步骤，本阶段不执行。
+
+## Gate 3 (Structure) - 本地运行
+
+Gate 3 会检查：
+- 业务源代码单文件行数阈值（>250 行即失败；可在 `ci/line-limit-whitelist.json` 登记豁免）
+- 单目录同一层级业务源文件数阈值（Flutter/NestJS >25、FastAPI >20）
+- import 边界约束（本仓库尚未配置边界规则时为预留字段）
+
+### 运行方式（本地）
+
+```powershell
+python ci/scripts/structure_gate.py
+```
+
+### 输出产物
+
+脚本会生成：
+- `ci_artifacts/structure-report.json`（必有）
