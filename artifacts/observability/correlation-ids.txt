@@ -1,6 +1,6 @@
 Correlation ID Configuration
 ============================
-Generated: 2026-02-01 12:21:38 UTC
+Generated: 2026-02-01 12:30:12 UTC
 
 Correlation ID Implementation:
 - Trace IDs: OpenTelemetry W3C Trace Context
@@ -15,6 +15,6 @@ Propagation:
 - WebSocket: Custom headers in connection handshake
 
 Example Trace Context:
-traceparent: 00-939ce265e24500fca35f74cc1c2d35c5-20e968dbacf6c344-01
+traceparent: 00-2969de22e7027e445ee12a5c3925b072-076042be86cbf4ea-01
 
 Status: CONFIGURED

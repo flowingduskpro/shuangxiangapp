@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../database/prisma.service';
 import { RedisService } from '../database/redis.service';
 import { ClassSessionAggregate } from './ws-messages.dto';
-import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class AggregationService {
