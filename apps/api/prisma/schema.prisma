@@ -12,3 +12,29 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+model ClassSession {
+  id        String   @id @default(cuid())
+  classId   String
+  createdAt DateTime @default(now())
+
+  events ClassEvent[]
+
+  @@index([classId])
+}
+
+model ClassEvent {
+  id             String   @id @default(cuid())
+  classSessionId String
+  userId         String
+  role           String
+  classId        String
+  eventType      String
+  createdAt      DateTime @default(now())
+  correlationId  String?
+
+  classSession ClassSession @relation(fields: [classSessionId], references: [id], onDelete: Cascade)
+
+  @@index([classSessionId, createdAt])
+  @@index([eventType, createdAt])
+}
