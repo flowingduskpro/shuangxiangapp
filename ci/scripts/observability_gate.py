@@ -45,6 +45,10 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 ARTIFACTS_DIR = REPO_ROOT / "ci_artifacts"
 TRACE_EVIDENCE_PATH = ARTIFACTS_DIR / "trace-evidence.md"
 
+PR2_OBS_DIR = REPO_ROOT / "artifacts" / "observability"
+PR2_SERVICE_LOGS = PR2_OBS_DIR / "service-logs.txt"
+PR2_CORRELATION_IDS = PR2_OBS_DIR / "correlation-ids.txt"
+
 CORRELATION_HEADER = "x-correlation-id"
 CORRELATION_FIELD = "correlation_id"
 DEFAULT_BUSINESS_FIELDS = ["class_session_id"]
@@ -138,17 +142,34 @@ def _check_minimal_evidence() -> CheckResult:
             risk="N/A",
         )
 
-    # If code exists, require evidence file to already exist and contain required tokens.
-    if not TRACE_EVIDENCE_PATH.exists():
+    # When code exists, require evidence in PR-2 artifacts (J6) so it can be uploaded and audited.
+    if not PR2_OBS_DIR.exists():
         return CheckResult(
             name="Minimal E2E observability evidence",
             ok=False,
             conclusion="FAIL",
-            evidence=f"Missing required artifact: `{TRACE_EVIDENCE_PATH.relative_to(REPO_ROOT).as_posix()}`",
-            risk="Without evidence, trace/log correlation for the MVP chain can't be audited",
+            evidence=f"Missing required observability dir: `{PR2_OBS_DIR.relative_to(REPO_ROOT).as_posix()}`",
+            risk="Without artifacts/observability, MVP trace/log correlation can't be audited",
         )
 
-    text = TRACE_EVIDENCE_PATH.read_text(encoding="utf-8", errors="replace")
+    if not PR2_SERVICE_LOGS.exists() or not PR2_CORRELATION_IDS.exists():
+        missing = []
+        if not PR2_SERVICE_LOGS.exists():
+            missing.append(PR2_SERVICE_LOGS.relative_to(REPO_ROOT).as_posix())
+        if not PR2_CORRELATION_IDS.exists():
+            missing.append(PR2_CORRELATION_IDS.relative_to(REPO_ROOT).as_posix())
+        return CheckResult(
+            name="Minimal E2E observability evidence",
+            ok=False,
+            conclusion="FAIL",
+            evidence="Missing required PR-2 evidence files: " + ", ".join(missing),
+            risk="Without these files, correlation ids and service logs for the MVP chain can't be audited",
+        )
+
+    text = (PR2_SERVICE_LOGS.read_text(encoding="utf-8", errors="replace") +
+            "\n" +
+            PR2_CORRELATION_IDS.read_text(encoding="utf-8", errors="replace"))
+
     missing: List[str] = []
 
     if CORRELATION_HEADER not in text:
@@ -163,7 +184,7 @@ def _check_minimal_evidence() -> CheckResult:
             name="Minimal E2E observability evidence",
             ok=True,
             conclusion="PASS",
-            evidence="trace-evidence.md contains required correlation keys and at least one business field",
+            evidence="artifacts/observability contains required correlation keys and at least one business field",
             risk="N/A",
         )
 
@@ -171,7 +192,7 @@ def _check_minimal_evidence() -> CheckResult:
         name="Minimal E2E observability evidence",
         ok=False,
         conclusion="FAIL",
-        evidence="trace-evidence.md missing tokens: " + ", ".join(missing),
+        evidence="observability evidence missing tokens: " + ", ".join(missing),
         risk="Without these keys, correlation across logs/traces/DB events won't be verifiable",
     )
 

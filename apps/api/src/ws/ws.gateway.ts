@@ -2,6 +2,7 @@ import { Logger } from '@nestjs/common';
 import {
   ConnectedSocket,
   MessageBody,
+  OnGatewayDisconnect,
   SubscribeMessage,
   WebSocketGateway,
 } from '@nestjs/websockets';
@@ -18,7 +19,7 @@ type SocketWithSession = Socket & { data: { session?: any } };
 @WebSocketGateway({
   cors: { origin: '*' },
 })
-export class WsGateway {
+export class WsGateway implements OnGatewayDisconnect {
   private readonly log = new Logger(WsGateway.name);
 
   constructor(
@@ -40,6 +41,22 @@ export class WsGateway {
       ack_type: ackType,
       error: error ?? null,
     };
+  }
+
+  async handleDisconnect(client: SocketWithSession) {
+    try {
+      const session = client.data.session;
+      if (session?.joined && session.classSessionId) {
+        const sessionId = session.classSessionId as string;
+        const correlationId = session.correlationId ?? 'disconnect';
+        const joined = await this.aggregates.removeJoined(sessionId);
+        this.log.log(
+          `disconnect correlation_id=${correlationId} class_session_id=${sessionId} joined_count=${joined}`,
+        );
+      }
+    } catch (e: any) {
+      this.log.error(`disconnect error: ${String(e?.message ?? e)}`);
+    }
   }
 
   @SubscribeMessage('message')
