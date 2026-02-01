@@ -1,0 +1,181 @@
+name: CI Gates
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  gates:
+    name: Run 7 Gates (placeholder + auditable artifacts)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Create PR-1 artifacts skeleton (required)
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          # Fixed PR artifacts tree (see memory_bank/ShuangxiangApp AI roles.md section J)
+          mkdir -p artifacts/audit \
+                   artifacts/runbook \
+                   artifacts/deps/flutter \
+                   artifacts/deps/node \
+                   artifacts/deps/python \
+                   artifacts/security \
+                   artifacts/static \
+                   artifacts/tests \
+                   artifacts/observability
+
+          # PR-1 minimum shells + guidance
+          cat > artifacts/runbook/repro-steps.md <<'EOF'
+          # PR-1 Repro Steps (placeholder)
+
+          This file is required by PR-1.
+
+          Purpose:
+          - Provide reproducible steps to validate the PR in a clean environment.
+          - Later, this must include the MVP minimal chain smoke steps.
+
+          Current status: placeholder (early-repo phase).
+          EOF
+
+          cat > artifacts/runbook/versions.txt <<'EOF'
+          # PR-1 Versions (placeholder)
+
+          Record toolchain/runtime versions used for reproduction.
+
+          Current status: placeholder (early-repo phase).
+          EOF
+
+          cat > artifacts/audit/dependency-integrity-report.md <<'EOF'
+          # Dependency Integrity Report (placeholder)
+
+          PR-1 minimum placeholder.
+
+          Note:
+          - Gate scripts currently produce `ci_artifacts/dependency-audit.md`.
+          - This file will be populated by CI by copying/transforming that report.
+          EOF
+
+          cat > artifacts/audit/report-validation-result.json <<'EOF'
+          {
+            "overall_ok": true,
+            "note": "placeholder: PR-1 minimal artifact shell; validator wiring to be implemented"
+          }
+          EOF
+
+          cat > artifacts/audit/report-validation-log.txt <<'EOF'
+          placeholder: report validation log
+          EOF
+
+          # PR-2 listed shells (created empty for now; later CI will populate them)
+          : > artifacts/deps/flutter/pub-resolved.txt
+          : > artifacts/deps/flutter/pub-sources.txt
+          : > artifacts/deps/flutter/package-resolve-paths.txt
+
+          : > artifacts/deps/node/node-resolved.txt
+          : > artifacts/deps/node/node-sources.txt
+          : > artifacts/deps/node/node-resolve-paths.txt
+
+          : > artifacts/deps/python/python-deps-status.txt
+
+          : > artifacts/security/shadowing-check.txt
+          : > artifacts/security/duplicate-module-names.txt
+
+          : > artifacts/static/ununsed-imports.txt
+          : > artifacts/static/false-integration-check.txt
+
+          : > artifacts/tests/flutter-test-report.txt
+          : > artifacts/tests/nest-test-report.txt
+          : > artifacts/tests/e2e-ws-report.txt
+
+          : > artifacts/observability/trace-export.json
+          : > artifacts/observability/correlation-ids.txt
+          : > artifacts/observability/service-logs.txt
+          : > artifacts/observability/e2e-timeline.txt
+
+      - name: Gate 1 - Preflight (must-read + architecture coupling)
+        env:
+          GITHUB_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: python ci/scripts/preflight.py
+
+      - name: Gate 2 - Structure (anti-monolith)
+        run: python ci/scripts/structure_gate.py
+
+      - name: Gate 3 - Dependency Integrity
+        run: python ci/scripts/dependency_gate.py
+
+      - name: Gate 4 - Tests (placeholder capability checks)
+        run: python ci/scripts/tests_gate.py
+
+      - name: Gate 5 - Observability (placeholder evidence checks)
+        run: python ci/scripts/observability_gate.py
+
+      - name: Gate 6 - MVP Scope
+        env:
+          GITHUB_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: python ci/scripts/mvp_scope_gate.py
+
+      - name: Gate 7 - Release Readiness
+        env:
+          GITHUB_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: python ci/scripts/release_readiness_gate.py
+
+      - name: Map ci_artifacts into PR artifacts (minimal)
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p ci_artifacts
+
+          # Best-effort mapping so PR artifacts have some real content early.
+          if [ -f ci_artifacts/dependency-audit.md ]; then
+            cp -f ci_artifacts/dependency-audit.md artifacts/audit/dependency-integrity-report.md
+          fi
+
+          if [ -f ci_artifacts/trace-evidence.md ]; then
+            # Keep CI-native evidence in place; PR artifacts tree remains separate for now.
+            true
+          fi
+
+      - name: Validate PR-1 minimal artifacts exist
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f artifacts/runbook/repro-steps.md
+          test -f artifacts/runbook/versions.txt
+          test -f artifacts/audit/dependency-integrity-report.md
+          test -f artifacts/audit/report-validation-result.json
+          test -f artifacts/audit/report-validation-log.txt
+
+      - name: Upload ci_artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci_artifacts
+          path: ci_artifacts/
+          retention-days: 30
+
+      - name: Upload artifacts (PR evidence tree)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: artifacts
+          path: artifacts/
+          retention-days: 30
+
