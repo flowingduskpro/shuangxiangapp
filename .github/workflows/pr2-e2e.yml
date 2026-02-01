@@ -104,18 +104,22 @@ jobs:
       - name: Wait for API
         run: |
           python - <<'PY'
+          import socket
           import time
-          import requests
 
-          url = 'http://localhost:3000/class-sessions'
+          host = '127.0.0.1'
+          port = 3000
+          ready = False
           for i in range(60):
               try:
-                  r = requests.post(url, json={'class_id': 'health-check'}, timeout=2)
-                  if r.status_code in (200, 201, 400):
-                      print('API is up')
-                      raise SystemExit(0)
-              except Exception:
+                  with socket.create_connection((host, port), timeout=2):
+                      print('API port is open')
+                      ready = True
+                      break
+              except OSError:
                   time.sleep(1)
+          if ready:
+              raise SystemExit(0)
           print('API did not become ready within 60 seconds')
           raise SystemExit(1)
           PY
