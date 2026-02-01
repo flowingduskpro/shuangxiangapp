@@ -1,0 +1,47 @@
+# MVP Scope Gate（关键词黑名单 hard fail）
+# - 用途：在 MVP 阶段阻止超范围能力进入主分支
+# - 检测对象：本次 PR 的改动文件路径 + 文件内容（文本匹配）
+# - 维护要求：任何新增关键词必须给出对应的“为什么属于非 MVP”的说明
+
+version: 1
+
+# 关键词匹配策略：大小写不敏感；对路径与内容均生效
+match:
+  case_insensitive: true
+  targets:
+    - path
+    - content
+
+# 命中任一关键词：CI 直接失败
+hard_fail_keywords:
+  # 摄像头/监控/取证
+  - camera
+  - webcam
+  - surveillance
+  - monitor
+  - screen_record
+  - screenshot
+
+  # MDM/强控/设备管控
+  - mdm
+  - device_management
+  - kiosk
+  - lockdown
+
+  # 惩戒/扣分/处罚（MVP 禁止自动化惩戒）
+  - punishment
+  - penalty
+  - deduct
+  - score_deduction
+
+  # V1/V2 模型能力（MVP 禁止复杂模型）
+  - embedding
+  - vector
+  - rerank
+  - ranking
+  - collaborative_filter
+  - cf
+
+notes:
+  - "本文件只定义 MVP 阶段的 hard fail 关键词；后续可引入 allowlist、按目录分级、按 PR label 例外等机制，但必须保持可审计。"
+
