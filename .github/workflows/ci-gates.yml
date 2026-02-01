@@ -41,8 +41,8 @@ jobs:
       - name: Gate 4 - Tests (placeholder capability checks)
         run: python ci/scripts/tests_gate.py
 
-      - name: Gate 5 - Observability (placeholder evidence checks)
-        run: python ci/scripts/observability_gate.py
+      - name: Gate 5 - Observability (token evidence)
+        run: python ci/scripts/observability_gate_minimal.py
 
       - name: Gate 6 - MVP Scope
         env:
