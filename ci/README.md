@@ -135,3 +135,32 @@ python ci/scripts/observability_gate.py
   - `x-correlation-id`
   - `correlation_id`
   - `class_session_id`（或后续扩展的等价业务关键字段）
+
+## Gate 7 (MVP Scope) - 本地运行
+
+Gate 7 对应 `memory_bank/implementation-plan.md` 第 7 节（MVP Scope Gate：范围控制）。
+
+该 Gate 在 MVP 阶段提供“关键字黑名单 hard fail”机制：对**本次变更文件路径 + 文件内容**做关键字匹配；命中任一关键字则 CI 失败。
+
+### 运行方式（本地）
+
+```powershell
+python ci/scripts/mvp_scope_gate.py
+```
+
+### 输出产物
+
+脚本会生成：
+- `ci_artifacts/mvp-scope-report.json`（必有）
+
+### docs-only / early-repo 处理
+
+- 如果本次变更集中没有 `*.dart` / `*.ts` / `*.py` 文件（例如仅文档/配置变更），结论为 N/A 且整体 PASS，但仍会生成可审计报告。
+
+### 失败条件（对应 Gate 7 的最小可机器检查子集）
+
+- `ci/mvp-scope-rules.yml` 中任一 `hard_fail_keywords` 在以下任一位置被匹配到：
+  - 变更文件的路径（path）
+  - 变更文件的内容（content）
+
+> 规则文件是可审计配置：如需新增/调整关键字，请在规则文件中保留清晰的“为什么属于非 MVP”的说明（见文件注释）。
