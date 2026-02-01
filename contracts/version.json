@@ -1,0 +1,8 @@
+{
+  "contracts_version": "pr-2.0.0",
+  "updated_utc": "2026-02-01T00:00:00Z",
+  "notes": [
+    "Initial PR-2 authoritative WS/REST contract baseline"
+  ]
+}
+

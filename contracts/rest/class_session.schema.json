@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://flowingduskpro.github.io/shuangxiangapp/contracts/rest/class_session.schema.json",
+  "title": "Class session REST contract (PR-2)",
+  "type": "object",
+  "$defs": {
+    "create_request": {
+      "type": "object",
+      "properties": {
+        "class_id": { "type": "string", "minLength": 1 }
+      },
+      "required": ["class_id"],
+      "additionalProperties": false
+    },
+    "create_response": {
+      "type": "object",
+      "properties": {
+        "class_session_id": { "type": "string", "minLength": 1 },
+        "version": { "type": "string" }
+      },
+      "required": ["class_session_id", "version"],
+      "additionalProperties": false
+    },
+    "get_response": {
+      "type": "object",
+      "properties": {
+        "class_session_id": { "type": "string", "minLength": 1 },
+        "class_id": { "type": "string", "minLength": 1 },
+        "version": { "type": "string" }
+      },
+      "required": ["class_session_id", "class_id", "version"],
+      "additionalProperties": false
+    }
+  }
+}
+

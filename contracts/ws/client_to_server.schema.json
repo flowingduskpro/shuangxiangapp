@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://flowingduskpro.github.io/shuangxiangapp/contracts/ws/client_to_server.schema.json",
+  "title": "WS Client → Server (PR-2)",
+  "type": "object",
+  "oneOf": [
+    { "$ref": "#/$defs/auth" },
+    { "$ref": "#/$defs/join_class_session" },
+    { "$ref": "#/$defs/event" }
+  ],
+  "$defs": {
+    "base": {
+      "type": "object",
+      "properties": {
+        "msg_type": { "type": "string" },
+        "version": { "type": "string" },
+        "correlation_id": { "type": "string" }
+      },
+      "required": ["msg_type", "version"],
+      "additionalProperties": true
+    },
+    "auth": {
+      "allOf": [
+        { "$ref": "#/$defs/base" },
+        {
+          "type": "object",
+          "properties": {
+            "msg_type": { "const": "auth" },
+            "token": { "type": "string", "minLength": 1 }
+          },
+          "required": ["token"],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "join_class_session": {
+      "allOf": [
+        { "$ref": "#/$defs/base" },
+        {
+          "type": "object",
+          "properties": {
+            "msg_type": { "const": "join_class_session" },
+            "class_session_id": { "type": "string", "minLength": 1 }
+          },
+          "required": ["class_session_id"],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "event": {
+      "allOf": [
+        { "$ref": "#/$defs/base" },
+        {
+          "type": "object",
+          "properties": {
+            "msg_type": { "const": "event" },
+            "event_type": { "const": "class_enter" },
+            "class_session_id": { "type": "string", "minLength": 1 }
+          },
+          "required": ["event_type", "class_session_id"],
+          "additionalProperties": false
+        }
+      ]
+    }
+  }
+}
