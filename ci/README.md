@@ -108,3 +108,30 @@ python ci/scripts/tests_gate.py
 - Flutter：存在 `pubspec.yaml` 但同目录缺少 `integration_test/` 或 `test/`
 - Node：存在 `package.json` 但同目录缺少 `test/` 或 `__tests__/`，且 `package.json` 中也没有 `scripts.test` / `jest` 配置
 - Python：存在 `requirements.txt` 或 `pyproject.toml` 但同目录缺少 `tests/`
+
+## Gate 6 (Observability) - 本地运行
+
+Gate 6 对应 `memory_bank/implementation-plan.md` 第 6 节（Observability Gate：最小可观测证据）。
+
+当前仓库仍可能处于“仅文档/代码尚未落地”的阶段，因此脚本采取与 Gate 4/5 类似的策略：
+- 如果仓库中不存在任何 manifest（`pubspec.yaml` / `package.json` / `requirements.txt` / `pyproject.toml`），结论为 N/A 且整体 PASS；
+- 一旦出现 manifest（意味着代码开始落地），就会开始要求 `ci_artifacts/trace-evidence.md` 中包含最小可关联字段（correlation + 业务关键字段）。
+
+### 运行方式（本地）
+
+```powershell
+python ci/scripts/observability_gate.py
+```
+
+### 输出产物
+
+脚本会生成：
+- `ci_artifacts/trace-evidence.md`（必有）
+
+### 失败条件（对应 Gate 6 的最小可机器检查子集）
+
+- 仓库出现 manifest，但缺少 `ci_artifacts/trace-evidence.md`；
+- 或 `ci_artifacts/trace-evidence.md` 不包含如下最小关键字：
+  - `x-correlation-id`
+  - `correlation_id`
+  - `class_session_id`（或后续扩展的等价业务关键字段）

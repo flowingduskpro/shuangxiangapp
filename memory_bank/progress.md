@@ -40,3 +40,22 @@
 
 ### 约束
 - 在你确认本步验证通过前，不开始 Step 6（Observability Gate）。
+
+## 2026-02-01 — Step 6（Observability Gate：最小可观测证据门禁落地）
+
+### 做了什么
+- 新增 `ci/scripts/observability_gate.py`：实现 `implementation-plan.md` 第 6 节的**最小可机器检查子集**（先不跑真实链路 smoke，只保证证据产物与关键字段存在）。
+- 更新 `ci/README.md`：补充 Gate 6 的本地运行方式、产物与失败条件说明。
+
+### 设计取舍（为什么这样做）
+- 当前仓库尚未落地可运行的 Flutter/NestJS/FastAPI 服务及 Docker Compose（0.7），因此无法在 CI 中稳定、可复现地跑端到端链路并收集 trace/log。
+- Gate 6 先采用“和 Gate 4/5 一致的分阶段收紧”策略：
+  - 若仓库无任何 manifest（`pubspec.yaml` / `package.json` / `requirements.txt` / `pyproject.toml`），结论为 N/A 且整体 PASS，但仍会生成 `ci_artifacts/trace-evidence.md` 留存证据。
+  - 一旦出现 manifest（意味着代码开始落地），就开始要求 `ci_artifacts/trace-evidence.md` 中包含最小可关联字段：`x-correlation-id`、`correlation_id`、以及至少一个业务关键字段（当前默认 `class_session_id`）。
+
+### 验证方式
+- 本地运行：`python ci/scripts/observability_gate.py`
+- 预期：终端输出 `Observability Gate PASSED`，并生成/刷新 `ci_artifacts/trace-evidence.md`。
+
+### 约束
+- 在你确认本步验证通过前，不开始 Step 7（MVP Scope Gate）。
