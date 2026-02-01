@@ -1,0 +1,41 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model ClassSession {
+  id         String   @id @default(uuid())
+  classId    String   @map("class_id")
+  status     String   @default("active")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+  
+  events     ClassEvent[]
+
+  @@map("class_sessions")
+  @@index([classId])
+}
+
+model ClassEvent {
+  id              String        @id @default(uuid())
+  classSessionId  String        @map("class_session_id")
+  userId          String        @map("user_id")
+  eventType       String        @map("event_type")
+  eventData       Json?         @map("event_data")
+  correlationId   String        @map("correlation_id")
+  timestamp       DateTime      @default(now())
+  
+  classSession    ClassSession  @relation(fields: [classSessionId], references: [id])
+
+  @@map("class_events")
+  @@index([classSessionId])
+  @@index([correlationId])
+  @@index([timestamp])
+}
+
