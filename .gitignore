@@ -22,3 +22,5 @@ node_modules/
 .dart_tool/
 build/
 
+# PR-2 artifacts (generated evidence)
+artifacts/
