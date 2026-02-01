@@ -11,8 +11,9 @@ Contract:
 - Must not fake integrations: if a stack isn't implemented yet, clearly mark N/A.
 
 Current stage:
-- Produces dependency and env evidence and leaves placeholders for runtime tests.
-- As PR-2 implementation progresses, this script will run the real e2e/observability capture.
+- Produces dependency and env evidence.
+- Delegates to `dependency_integrity_report.py` so the 1–40 list is always generated.
+- Leaves runtime evidence to dedicated runners (e2e + observability export).
 """
 
 from __future__ import annotations
@@ -50,6 +51,14 @@ def main() -> int:
     ], cwd=REPO_ROOT)
     if rc != 0:
         raise RuntimeError(f"create_pr_artifacts_skeleton.py failed (rc={rc}): {err}")
+
+    # Generate dependency integrity report (1–40 full list)
+    rc, out, err = _run([
+        "python",
+        str(REPO_ROOT / "ci" / "scripts" / "dependency_integrity_report.py"),
+    ], cwd=REPO_ROOT)
+    if rc != 0:
+        raise RuntimeError(f"dependency_integrity_report.py failed (rc={rc}): {err}")
 
     # versions.txt
     versions = {
@@ -108,8 +117,7 @@ def main() -> int:
         if not rel.exists():
             _write(rel, "PENDING\n")
 
-    # Observability placeholders (will be replaced by real OTel export)
-    # Ensure required tokens exist even at placeholder stage.
+    # Observability placeholders: only write if files do not exist yet.
     obs_placeholders = {
         "trace-export.json": "{\n  \"status\": \"PENDING\",\n  \"note\": \"Will be overwritten by real OTel export\"\n}\n",
         "correlation-ids.txt": "placeholder-correlation_id\n",
@@ -119,21 +127,11 @@ def main() -> int:
 
     for name, content in obs_placeholders.items():
         p = ART / "observability" / name
-        _write(p, content)
-
-    # Audit report mapping: ensure dependency-integrity-report.md exists
-    dep_report = ART / "audit" / "dependency-integrity-report.md"
-    if not dep_report.exists():
-        # fall back to CI report if present
-        ci_dep = REPO_ROOT / "ci_artifacts" / "dependency-audit.md"
-        if ci_dep.exists():
-            _write(dep_report, ci_dep.read_text(encoding="utf-8", errors="replace"))
-        else:
-            _write(dep_report, "PENDING\n")
+        if not p.exists():
+            _write(p, content)
 
     return 0
 
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

@@ -7,8 +7,7 @@ Thumbs.db
 *.iml
 
 # CI artifacts (generated)
-ci_artifacts/*.json
-ci_artifacts/*.md
+ci_artifacts/*
 
 # Python
 __pycache__/
