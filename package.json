@@ -1,0 +1,15 @@
+{
+  "name": "shuangxiangapp",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*",
+    "tools/*"
+  ],
+  "scripts": {
+    "ci:artifacts:skeleton": "python ci/scripts/create_pr_artifacts_skeleton.py",
+    "ci:artifacts:validate": "python ci/scripts/report_validation_gate.py",
+    "ci:gates": "python ci/scripts/preflight.py && python ci/scripts/structure_gate.py && python ci/scripts/dependency_gate.py && python ci/scripts/tests_gate.py && python ci/scripts/observability_gate.py && python ci/scripts/mvp_scope_gate.py && python ci/scripts/release_readiness_gate.py && python ci/scripts/modularization_gate.py && python ci/scripts/report_validation_gate.py",
+    "test": "node -e \"console.log('test placeholder: PASS')\""
+  }
+}
