@@ -106,8 +106,21 @@ def read_pr_body() -> str:
     override_file = os.environ.get("PR_BODY_FILE_OVERRIDE")
     if override_file:
         override_path = Path(override_file)
-        if override_path.exists():
-            return override_path.read_text(encoding="utf-8")
+        if not override_path.exists():
+            print(f"PR_BODY_FILE_OVERRIDE not found: {override_file}", file=sys.stderr)
+            return ""
+        override_path = override_path.resolve()
+        if override_path.is_file():
+            try:
+                override_path.relative_to(REPO_ROOT / "ci")
+            except ValueError:
+                print(
+                    f"PR_BODY_FILE_OVERRIDE must point inside {REPO_ROOT / 'ci'}; got {override_path}",
+                    file=sys.stderr,
+                )
+                return ""
+            else:
+                return override_path.read_text(encoding="utf-8")
 
     # GitHub Actions: parse the event payload
     event_path = os.environ.get("GITHUB_EVENT_PATH")

@@ -87,7 +87,18 @@ jobs:
           REDIS_URL: redis://localhost:6379
           PR2_TRACE_EXPORT_PATH: ${{ github.workspace }}/artifacts/observability/trace-export.json
         run: |
-          node dist/src/main.js > ${{ github.workspace }}/artifacts/observability/service-api.log 2>&1 &
+          entry=$(node - <<'NODE'
+          const fs = require('fs');
+          const candidates = ['dist/src/main.js', 'dist/main.js'];
+          const found = candidates.find((p) => fs.existsSync(p));
+          if (!found) {
+            console.error('API build entry not found; checked paths: dist/src/main.js, dist/main.js');
+            process.exit(1);
+          }
+          console.log(found);
+          NODE
+          )
+          node "$entry" > ${{ github.workspace }}/artifacts/observability/service-api.log 2>&1 &
           echo $! > ${{ github.workspace }}/artifacts/observability/api.pid
 
       - name: Wait for API
@@ -96,16 +107,17 @@ jobs:
           import time
           import requests
 
-          url = 'http://localhost:3000/class-sessions'
+          url = 'http://localhost:3000/health'
           for i in range(60):
               try:
-                  r = requests.post(url, json={'class_id':'health'}, timeout=2)
-                  if r.status_code in (200, 201, 400):
+                  r = requests.get(url, timeout=2)
+                  if r.status_code in (200, 204):
                       print('API is up')
                       raise SystemExit(0)
               except Exception:
                   time.sleep(1)
-          raise SystemExit('API did not become ready in time')
+          print('API did not become ready within 60 seconds')
+          raise SystemExit(1)
           PY
 
       - name: Run PR-2 E2E WS
@@ -147,4 +159,3 @@ jobs:
           name: ci_artifacts
           path: ci_artifacts/
           retention-days: 30
-
