@@ -83,3 +83,28 @@
 
 ### 约束
 - 在你确认本步验证通过前，不开始 Step 9（“模块化与依赖黑箱”的统一口径）。
+
+## 2026-02-01 — Step 9（模块化与依赖黑箱：统一口径 → 可审计 Gate）
+
+### 做了什么
+- 基于 `memory_bank/implementation-plan.md` 的第 9 节（模块化 / 不得二次抽象 / 依赖黑箱口径），补齐**可机器检查的 Gate 9**落地项（目标：把原则变成可复现、可追溯的检查与产物）：
+  - 新增 `ci/scripts/modularization_gate.py`：对仓库结构进行静态扫描，输出可审计结论。
+  - 新增产物：`ci_artifacts/modularization-report.json`（脚本每次运行必生成；失败必须能定位到具体路径证据）。
+  - 在 early-repo 阶段采用与 Gate 4/5/6 一致的“分阶段收紧”策略：若仓库尚无任何 manifest（`pubspec.yaml` / `package.json` / `requirements.txt` / `pyproject.toml`）且未出现业务代码根目录，则结论为 `PASS (N/A)`，但仍生成报告并提示后续收紧触发条件。
+
+> 注：Gate 9 的检查口径以“可解释、可定位”为第一优先级，先采用目录/路径规则（例如：禁止泛化共享层目录、禁止疑似复制依赖源码目录等），后续随真实代码落地再逐步增强到依赖图/导入约束。
+
+### 为什么这样做
+- `implementation-plan.md` 第 9 节要求对“模块化”与“依赖黑箱”给出统一口径，但仅有原则性描述不足以形成 CI 的可执行约束，也无法在出现违规时提供可审计证据。
+- 在业务代码尚未落地阶段，直接硬性失败会把流程卡死；因此沿用 Gate 4/5/6 的策略：
+  - early-repo 先 `PASS (N/A)` 并产出结构化报告；
+  - 一旦出现 manifest/代码根目录，即切换为硬性检查，确保后续不会在结构层面滑向“共享大杂烩/自研通用层/复制依赖源码”等不可控状态。
+
+### 验证方式
+- 本地运行：`python ci\scripts\modularization_gate.py`
+- 预期：终端输出 `Modularization Gate PASSED`（early-repo 阶段可能显示 `PASSED (N/A)`），并生成/刷新 `ci_artifacts/modularization-report.json`，其中 `overall_ok=true`。
+- 验证结果：✅ 已在本地验证通过；`ci_artifacts/modularization-report.json` 已生成且 `overall_ok=true`。
+
+### 约束
+- 在你确认本步验证通过前，不开始下一步（Step 10 及后续）。
+- 当前：你已确认本步通过，可进入下一步。
