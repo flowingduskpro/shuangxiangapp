@@ -45,7 +45,7 @@ This directory contains scripts for generating comprehensive CI/CD artifacts for
 - `artifacts/security/duplicate-module-names.txt` - Identifies duplicate/conflicting versions
 
 #### Static Analysis Artifacts (2 files)
-- `artifacts/static/ununsed-imports.txt` - Detects potentially unused imports in TypeScript
+- `artifacts/static/unused-imports.txt` - Detects potentially unused imports in TypeScript
 - `artifacts/static/false-integration-check.txt` - Scans for mocks/stubs in production code
 
 #### Test Artifacts (3 files)
@@ -160,7 +160,7 @@ artifacts/
 │   ├── shadowing-check.txt
 │   └── duplicate-module-names.txt
 ├── static/
-│   ├── ununsed-imports.txt
+│   ├── unused-imports.txt
 │   └── false-integration-check.txt
 ├── tests/
 │   ├── flutter-test-report.txt         (N/A)
