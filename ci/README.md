@@ -3,7 +3,7 @@
 本目录用于存放 CI 门禁所需的可审计配置。
 
 - `line-limit-whitelist.json`：单文件行数超过阈值时的白名单（必须填写原因与到期日）。
-- `mvp-scope-rules.yml`：MVP Scope Gate 的关键词黑名单规则（命中即 hard fail）。
+- `mvp-scope-rules.yml`：MVP Scope Gate 的关键字黑名单规则（命中即 hard fail）。
 
 > 具体规则见 `memory_bank/implementation-plan.md`。
 
@@ -83,3 +83,28 @@ python ci/scripts/dependency_gate.py
 - 发现依赖清单（例如 `pubspec.yaml` / `package.json` / `requirements.txt` / `pyproject.toml`），但缺少对应的锁定/可复现机制（例如 `pubspec.lock` / Node lockfile / Python lockfile 或严格 pin）。
 
 > 更完整的约束与证据格式，以 `memory_bank/implementation-plan.md` 第 4 节为准。
+
+## Gate 5 (Tests) - 本地运行
+
+Gate 5 对应 `memory_bank/implementation-plan.md` 第 5 节（Tests Gate：每一步必须有测试）。
+
+当前仓库仍可能处于“仅文档/目录尚未落代码”的阶段，因此脚本采取与 Gate 4 类似的策略：
+- 如果仓库里没有任何 Flutter/Node/Python 的依赖清单（manifest），则该技术栈结论为 N/A，门禁整体 PASS；
+- 一旦出现对应 manifest，则开始要求最小测试骨架存在（例如 `tests/`、`integration_test/` 或 `test` 配置）。
+
+### 运行方式（本地）
+
+```powershell
+python ci/scripts/tests_gate.py
+```
+
+### 输出产物
+
+脚本会生成：
+- `ci_artifacts/tests-report.json`（必有）
+
+### 失败条件（对应该 Gate 5 的最小可机器检查子集）
+
+- Flutter：存在 `pubspec.yaml` 但同目录缺少 `integration_test/` 或 `test/`
+- Node：存在 `package.json` 但同目录缺少 `test/` 或 `__tests__/`，且 `package.json` 中也没有 `scripts.test` / `jest` 配置
+- Python：存在 `requirements.txt` 或 `pyproject.toml` 但同目录缺少 `tests/`

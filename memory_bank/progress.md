@@ -21,3 +21,22 @@
 ### 约束
 - 在你确认测试/检查通过前，不开始 Step 2。
 
+## 2026-02-01 — Step 5（Tests Gate：最小可执行骨架落地）
+
+### 做了什么
+- 新增 `ci/scripts/tests_gate.py`：实现 `implementation-plan.md` 第 5 节的**最小可机器检查子集**（先不跑测试，只检查“测试能力/骨架是否存在”）。
+- 新增产物：`ci_artifacts/tests-report.json`（脚本每次运行必生成）。
+- 更新 `ci/README.md`：补充 Gate 5 的本地运行方式、产物与失败条件说明。
+
+### 设计取舍（为什么这样做）
+- 当前仓库尚未落地 Flutter/NestJS/FastAPI 代码根与依赖清单时，严格执行“必须运行测试”会导致流程不可用。
+- 因此 Gate 5 采取与 Gate 4 类似的策略：
+  - 若没有 manifest（`pubspec.yaml` / `package.json` / `requirements.txt` / `pyproject.toml`），结论为 N/A 且整体 PASS，并留下可追溯证据。
+  - 一旦出现 manifest，就开始硬性要求最小测试骨架存在（例如 `tests/`、`integration_test/` 或 `scripts.test`/jest wiring）。
+
+### 验证方式
+- 本地运行：`python ci/scripts/tests_gate.py`
+- 预期：终端输出 `Tests Gate PASSED`，并生成 `ci_artifacts/tests-report.json`，其中 `overall_ok=true`。
+
+### 约束
+- 在你确认本步验证通过前，不开始 Step 6（Observability Gate）。
