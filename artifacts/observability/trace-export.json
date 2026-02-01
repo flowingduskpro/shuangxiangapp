@@ -4,7 +4,7 @@
       "traceId": "00000000000000000000000000000000",
       "spanId": "0000000000000000",
       "name": "sample-trace",
-      "timestamp": "2026-02-01T12:18:26Z",
+      "timestamp": "2026-02-01T12:21:38Z",
       "duration": 0,
       "serviceName": "shuangxiangapp-backend",
       "status": "NOT_RUNNING",
@@ -12,7 +12,7 @@
     }
   ],
   "metadata": {
-    "exportTime": "2026-02-01T12:18:26Z",
+    "exportTime": "2026-02-01T12:21:38Z",
     "format": "OpenTelemetry",
     "instrumentation": {
       "library": "@opentelemetry/sdk-node",

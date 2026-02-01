@@ -500,13 +500,17 @@ The project demonstrates good dependency management practices with lock files, r
 
 **Report Validation:** This report should be validated against report-validation-result.json
 
-**Next Review Date:** $(date -d "+30 days" +"%Y-%m-%d" 2>/dev/null || date -v+30d +"%Y-%m-%d" 2>/dev/null || echo "30 days from now")
+**Next Review Date:** NEXT_REVIEW_DATE_PLACEHOLDER
 
 EOF
 
     # Replace $(date) commands with actual output
+    local next_review_date=$(date -d "+30 days" +"%Y-%m-%d" 2>/dev/null || date -v+30d +"%Y-%m-%d" 2>/dev/null || echo "30 days from now")
     sed -i "s/\$(date -u +\"%Y-%m-%d %H:%M:%S UTC\")/$(date -u +"%Y-%m-%d %H:%M:%S UTC")/g" "$report_file" 2>/dev/null || \
     sed -i '' "s/\$(date -u +\"%Y-%m-%d %H:%M:%S UTC\")/$(date -u +"%Y-%m-%d %H:%M:%S UTC")/g" "$report_file"
+    
+    sed -i "s/NEXT_REVIEW_DATE_PLACEHOLDER/${next_review_date}/g" "$report_file" 2>/dev/null || \
+    sed -i '' "s/NEXT_REVIEW_DATE_PLACEHOLDER/${next_review_date}/g" "$report_file"
     
     log_info "Created: $report_file"
 }
@@ -777,7 +781,7 @@ generate_static_analysis_artifacts() {
     cd "${BACKEND_DIR}"
     
     # Unused imports check
-    local unused_imports="${ARTIFACTS_DIR}/static/ununsed-imports.txt"
+    local unused_imports="${ARTIFACTS_DIR}/static/unused-imports.txt"
     echo "Unused Imports Analysis" > "$unused_imports"
     echo "=======================" >> "$unused_imports"
     echo "Generated: $(date -u +"%Y-%m-%d %H:%M:%S UTC")" >> "$unused_imports"
@@ -1445,7 +1449,7 @@ main() {
         "deps/python/python-deps-status.txt"
         "security/shadowing-check.txt"
         "security/duplicate-module-names.txt"
-        "static/ununsed-imports.txt"
+        "static/unused-imports.txt"
         "static/false-integration-check.txt"
         "tests/flutter-test-report.txt"
         "tests/nest-test-report.txt"

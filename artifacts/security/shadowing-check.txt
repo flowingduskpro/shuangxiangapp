@@ -1,6 +1,6 @@
 Dependency Shadowing Check
 ==========================
-Generated: 2026-02-01 12:18:18 UTC
+Generated: 2026-02-01 12:21:30 UTC
 
 Checking for dependency shadowing (local packages overriding node_modules)...
 

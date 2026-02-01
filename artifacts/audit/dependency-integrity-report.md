@@ -1,6 +1,6 @@
 # Dependency Integrity Report
 
-**Generated:** 2026-02-01 12:18:17 UTC
+**Generated:** 2026-02-01 12:21:29 UTC
 **Project:** ShuangxiangApp
 **Scope:** All project dependencies (Node.js, Flutter, Python)
 
@@ -414,5 +414,5 @@ The project demonstrates good dependency management practices with lock files, r
 
 **Report Validation:** This report should be validated against report-validation-result.json
 
-**Next Review Date:** $(date -d "+30 days" +"%Y-%m-%d" 2>/dev/null || date -v+30d +"%Y-%m-%d" 2>/dev/null || echo "30 days from now")
+**Next Review Date:** 2026-03-03
 

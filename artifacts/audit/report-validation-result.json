@@ -1,10 +1,10 @@
 {
   "validation_status": "PASS",
-  "timestamp": "2026-02-01T12:18:17Z",
+  "timestamp": "2026-02-01T12:21:29Z",
   "report_file": "dependency-integrity-report.md",
   "checks": {
     "report_exists": true,
-    "report_size_bytes": 11990,
+    "report_size_bytes": 11889,
     "contains_40_checklist_items": true,
     "contains_evidence": true,
     "contains_risk_assessment": true,

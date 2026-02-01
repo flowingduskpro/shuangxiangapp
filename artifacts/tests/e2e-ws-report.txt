@@ -1,6 +1,6 @@
 E2E WebSocket Test Report
 =========================
-Generated: 2026-02-01 12:18:26 UTC
+Generated: 2026-02-01 12:21:38 UTC
 
 E2E WebSocket tests available in:
   - apps/backend/test/websocket.e2e-spec.ts

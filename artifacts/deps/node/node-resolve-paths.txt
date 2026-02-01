@@ -1,6 +1,6 @@
 Node.js Dependency Resolve Paths
 =================================
-Generated: 2026-02-01 12:18:18 UTC
+Generated: 2026-02-01 12:21:30 UTC
 
 Node Modules Location: /home/runner/work/shuangxiangapp/shuangxiangapp/apps/backend/node_modules
 
