@@ -32,7 +32,7 @@ services:
       PORT: "3000"
       DATABASE_URL: "postgresql://shuangxiang:shuangxiang@postgres:5432/shuangxiang"
       REDIS_URL: "redis://redis:6379"
-    command: ["bash", "-lc", "cd apps/api && npm ci && npx prisma migrate deploy && npm run build && node dist/main.js"]
+    command: ["bash", "-lc", "cd apps/api && npm ci && npm run prisma:migrate:deploy && npm run prisma:generate && npm run build && node dist/main.js"]
     ports:
       - "3000:3000"
     depends_on:
