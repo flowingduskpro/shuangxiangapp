@@ -23,89 +23,8 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Create PR-1 artifacts skeleton (required)
-        shell: bash
-        run: |
-          set -euo pipefail
-
-          # Fixed PR artifacts tree (see memory_bank/ShuangxiangApp AI roles.md section J)
-          mkdir -p artifacts/audit \
-                   artifacts/runbook \
-                   artifacts/deps/flutter \
-                   artifacts/deps/node \
-                   artifacts/deps/python \
-                   artifacts/security \
-                   artifacts/static \
-                   artifacts/tests \
-                   artifacts/observability
-
-          # PR-1 minimum shells + guidance
-          cat > artifacts/runbook/repro-steps.md <<'EOF'
-          # PR-1 Repro Steps (placeholder)
-
-          This file is required by PR-1.
-
-          Purpose:
-          - Provide reproducible steps to validate the PR in a clean environment.
-          - Later, this must include the MVP minimal chain smoke steps.
-
-          Current status: placeholder (early-repo phase).
-          EOF
-
-          cat > artifacts/runbook/versions.txt <<'EOF'
-          # PR-1 Versions (placeholder)
-
-          Record toolchain/runtime versions used for reproduction.
-
-          Current status: placeholder (early-repo phase).
-          EOF
-
-          cat > artifacts/audit/dependency-integrity-report.md <<'EOF'
-          # Dependency Integrity Report (placeholder)
-
-          PR-1 minimum placeholder.
-
-          Note:
-          - Gate scripts currently produce `ci_artifacts/dependency-audit.md`.
-          - This file will be populated by CI by copying/transforming that report.
-          EOF
-
-          cat > artifacts/audit/report-validation-result.json <<'EOF'
-          {
-            "overall_ok": true,
-            "note": "placeholder: PR-1 minimal artifact shell; validator wiring to be implemented"
-          }
-          EOF
-
-          cat > artifacts/audit/report-validation-log.txt <<'EOF'
-          placeholder: report validation log
-          EOF
-
-          # PR-2 listed shells (created empty for now; later CI will populate them)
-          : > artifacts/deps/flutter/pub-resolved.txt
-          : > artifacts/deps/flutter/pub-sources.txt
-          : > artifacts/deps/flutter/package-resolve-paths.txt
-
-          : > artifacts/deps/node/node-resolved.txt
-          : > artifacts/deps/node/node-sources.txt
-          : > artifacts/deps/node/node-resolve-paths.txt
-
-          : > artifacts/deps/python/python-deps-status.txt
-
-          : > artifacts/security/shadowing-check.txt
-          : > artifacts/security/duplicate-module-names.txt
-
-          : > artifacts/static/ununsed-imports.txt
-          : > artifacts/static/false-integration-check.txt
-
-          : > artifacts/tests/flutter-test-report.txt
-          : > artifacts/tests/nest-test-report.txt
-          : > artifacts/tests/e2e-ws-report.txt
-
-          : > artifacts/observability/trace-export.json
-          : > artifacts/observability/correlation-ids.txt
-          : > artifacts/observability/service-logs.txt
-          : > artifacts/observability/e2e-timeline.txt
+      - name: Create PR-2 artifacts skeleton (fixed list J1–J7)
+        run: python ci/scripts/create_pr_artifacts_skeleton.py
 
       - name: Gate 1 - Preflight (must-read + architecture coupling)
         env:
@@ -148,20 +67,8 @@ jobs:
             cp -f ci_artifacts/dependency-audit.md artifacts/audit/dependency-integrity-report.md
           fi
 
-          if [ -f ci_artifacts/trace-evidence.md ]; then
-            # Keep CI-native evidence in place; PR artifacts tree remains separate for now.
-            true
-          fi
-
-      - name: Validate PR-1 minimal artifacts exist
-        shell: bash
-        run: |
-          set -euo pipefail
-          test -f artifacts/runbook/repro-steps.md
-          test -f artifacts/runbook/versions.txt
-          test -f artifacts/audit/dependency-integrity-report.md
-          test -f artifacts/audit/report-validation-result.json
-          test -f artifacts/audit/report-validation-log.txt
+      - name: Validate PR-2 artifacts exist (J1–J7)
+        run: python ci/scripts/report_validation_gate.py
 
       - name: Upload ci_artifacts
         if: always()
