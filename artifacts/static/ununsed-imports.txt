@@ -1,0 +1,10 @@
+Unused Imports Analysis
+=======================
+Generated: 2026-02-01 12:18:25 UTC
+
+Scanning TypeScript files for unused imports...
+
+Potentially unused: v4 in src/websocket/aggregation.service.ts
+Potentially unused: uuidv4 in src/websocket/aggregation.service.ts
+
+Status: ANALYSIS_COMPLETE

@@ -1,0 +1,20 @@
+E2E Test Timeline
+=================
+Generated: 2026-02-01 12:18:26 UTC
+
+Timeline of E2E test execution (requires running tests with --verbose):
+
+Test Suite: WebSocket E2E Tests
+--------------------------------
+T+0ms    : Test suite initialization
+T+100ms  : Backend server startup
+T+500ms  : WebSocket connection established
+T+600ms  : Authentication test begins
+T+750ms  : Event emission tests
+T+1000ms : Aggregation tests
+T+1200ms : Cleanup and teardown
+
+Note: Actual timings require live test execution with instrumentation
+Run with: npm run test:e2e -- --verbose
+
+Status: TEMPLATE_GENERATED

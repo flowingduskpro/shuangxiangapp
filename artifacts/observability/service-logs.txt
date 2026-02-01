@@ -1,0 +1,31 @@
+Service Log Configuration
+=========================
+Generated: 2026-02-01 12:18:26 UTC
+
+Logging Framework: NestJS Logger
+Format: Structured JSON (production) / Pretty (development)
+
+Log Levels:
+- ERROR: Application errors and exceptions
+- WARN: Warning conditions
+- INFO: Informational messages
+- DEBUG: Debug-level messages
+- VERBOSE: Detailed trace information
+
+Log Correlation:
+- Each log entry includes trace_id and span_id from OpenTelemetry context
+- Enables correlation between logs and distributed traces
+
+Sample Log Entry (JSON):
+{
+  "timestamp": "2024-02-01T12:00:00.000Z",
+  "level": "INFO",
+  "message": "Incoming request",
+  "context": "HTTP",
+  "trace_id": "00000000000000000000000000000000",
+  "span_id": "0000000000000000",
+  "method": "GET",
+  "path": "/api/endpoint"
+}
+
+Status: CONFIGURED

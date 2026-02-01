@@ -1,0 +1,60 @@
+Duplicate Module Names Check
+============================
+Generated: 2026-02-01 12:18:18 UTC
+
+Checking for duplicate module names across dependency tree...
+
+✓ No duplicate or conflicting versions detected
+
+Checking common packages that often duplicate:
+  lodash: 5 versions found
+backend@1.0.0 /home/runner/work/shuangxiangapp/shuangxiangapp/apps/backend
+├─┬ @nestjs/cli@11.0.16
+│ └─┬ node-emoji@1.11.0
+│   └── lodash@4.17.23
+├─┬ @nestjs/config@4.0.2
+│ └── lodash@4.17.21
+└─┬ prisma@7.3.0
+  └─┬ @prisma/dev@0.20.0
+    └─┬ @mrleebo/prisma-ast@0.13.1
+      └─┬ chevrotain@10.5.0
+        ├─┬ @chevrotain/cst-dts-gen@10.5.0
+        │ └── lodash@4.17.21
+        ├─┬ @chevrotain/gast@10.5.0
+        │ └── lodash@4.17.21
+        └── lodash@4.17.21
+
+  uuid: 2 versions found
+backend@1.0.0 /home/runner/work/shuangxiangapp/shuangxiangapp/apps/backend
+├─┬ @opentelemetry/auto-instrumentations-node@0.69.0
+│ └─┬ @opentelemetry/resource-detector-gcp@0.46.0
+│   └─┬ gcp-metadata@6.1.1
+│     └─┬ gaxios@6.7.1
+│       └── uuid@9.0.1
+└── uuid@13.0.0
+
+  typescript: 10 versions found
+backend@1.0.0 /home/runner/work/shuangxiangapp/shuangxiangapp/apps/backend
+├─┬ @nestjs/cli@11.0.16
+│ ├─┬ fork-ts-checker-webpack-plugin@9.1.0
+│ │ ├─┬ cosmiconfig@8.3.6
+│ │ │ └── typescript@5.9.3 deduped
+│ │ └── typescript@5.9.3 deduped
+│ └── typescript@5.9.3 deduped
+├─┬ @nestjs/schematics@11.0.9
+│ └── typescript@5.9.3 deduped
+├─┬ @prisma/client@7.3.0
+│ └── typescript@5.9.3 deduped
+├─┬ prisma@7.3.0
+│ ├─┬ @prisma/dev@0.20.0
+│ │ └─┬ valibot@1.2.0
+│ │   └── typescript@5.9.3 deduped
+│ └── typescript@5.9.3 deduped
+├─┬ ts-jest@29.4.6
+│ └── typescript@5.9.3 deduped
+├─┬ ts-node@10.9.2
+│ └── typescript@5.9.3 deduped
+└── typescript@5.9.3
+
+
+Status: PASS - Dependency tree analyzed

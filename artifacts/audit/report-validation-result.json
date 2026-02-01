@@ -1,0 +1,35 @@
+{
+  "validation_status": "PASS",
+  "timestamp": "2026-02-01T12:18:17Z",
+  "report_file": "dependency-integrity-report.md",
+  "checks": {
+    "report_exists": true,
+    "report_size_bytes": 11990,
+    "contains_40_checklist_items": true,
+    "contains_evidence": true,
+    "contains_risk_assessment": true,
+    "contains_conclusions": true,
+    "format_valid": true
+  },
+  "metrics": {
+    "total_checklist_items": 40,
+    "pass_items": 18,
+    "partial_items": 3,
+    "requires_verification": 7,
+    "requires_audit": 4,
+    "pending_items": 4,
+    "unknown_items": 2,
+    "na_items": 2
+  },
+  "summary": {
+    "overall_status": "MODERATE_RISK",
+    "risk_score": "6/10",
+    "critical_actions_count": 5,
+    "recommendations_count": 5
+  },
+  "validator": {
+    "name": "CI Artifacts Generator",
+    "version": "1.0.0",
+    "validated_by": "automated_script"
+  }
+}

@@ -1,0 +1,19 @@
+NestJS Test Report
+==================
+Generated: 2026-02-01 12:18:26 UTC
+
+Running NestJS unit tests...
+
+
+> backend@1.0.0 test
+> jest
+
+No tests found, exiting with code 1
+Run with `--passWithNoTests` to exit with code 0
+In /home/runner/work/shuangxiangapp/shuangxiangapp/apps/backend/src
+  19 files checked.
+  testMatch:  - 0 matches
+  testPathIgnorePatterns: /node_modules/ - 19 matches
+  testRegex: .*\.spec\.ts$ - 0 matches
+Pattern:  - 0 matches
+Tests completed with exit code: 1

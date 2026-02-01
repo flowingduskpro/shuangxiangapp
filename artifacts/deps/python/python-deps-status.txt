@@ -1,0 +1,1 @@
+N/A - No Python dependencies detected (no requirements.txt or pyproject.toml)
