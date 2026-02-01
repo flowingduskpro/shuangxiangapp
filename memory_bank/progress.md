@@ -59,3 +59,27 @@
 
 ### 约束
 - 在你确认本步验证通过前，不开始 Step 7（MVP Scope Gate）。
+
+## 2026-02-01 — Step 8（Release Readiness Gate：最小发布就绪门禁落地）
+
+### 做了什么
+- 新增 `ci/scripts/release_readiness_gate.py`：实现 `implementation-plan.md` 第 8 节的**最小可机器检查子集**，用于检查每个可合并 PR 是否具备最小发布就绪材料。
+- 新增产物：`ci_artifacts/release-readiness-report.json`（脚本每次运行必生成）。
+- 新增最小文档落点（让 Gate 8 在 early-repo 阶段也可审计、可执行）：
+  - `RELEASE_NOTES.md`：要求包含“影响范围/回滚方式”。
+  - `docs/runbook/mvp.md`：要求包含 docker compose 启动说明 + smoke 说明；若涉及 `migrations/**`，需包含向后兼容策略与迁移回滚说明。
+- 更新 `ci/README.md`：补充 Gate 8 的本地运行方式、产物与失败条件（并说明 early-repo 阶段 compose 尚未落地时的处理策略）。
+
+### 设计取舍（为什么这样做）
+- `implementation-plan.md` 第 8 节要求“每个可合并 PR 必须具备变更记录、回滚方式、最小运行说明（干净环境可复现）”。
+- 但当前仓库仍处于“门禁与文档先行、业务代码与 Docker Compose(0.7) 尚未落地”的阶段。
+- 因此本步采取“**文档硬要求 + 运行基线分阶段收紧**”的策略：
+  - 文档（变更记录 + runbook）始终硬性要求存在，确保审计与交接可落地。
+  - 当仓库尚无 `docker-compose.yml` / `compose.yml` 时，对“Compose 基线存在性”给出 `PASS (N/A)`，并在报告中提示后续补齐；避免在纯文档/脚手架阶段把流水线卡死。
+
+### 验证方式
+- 本地运行：`python ci/scripts/release_readiness_gate.py`
+- 预期：终端输出 `Release Readiness Gate PASSED`，并生成/刷新 `ci_artifacts/release-readiness-report.json`，其中 `overall_ok=true`。
+
+### 约束
+- 在你确认本步验证通过前，不开始 Step 9（“模块化与依赖黑箱”的统一口径）。

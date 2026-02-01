@@ -164,3 +164,37 @@ python ci/scripts/mvp_scope_gate.py
   - 变更文件的内容（content）
 
 > 规则文件是可审计配置：如需新增/调整关键字，请在规则文件中保留清晰的“为什么属于非 MVP”的说明（见文件注释）。
+
+## Gate 8 (Release Readiness) - 本地运行
+
+Gate 8 对应 `memory_bank/implementation-plan.md` 第 8 节（Release Readiness Gate：最小发布就绪）。
+
+该 Gate 要求每个可合并 PR 至少具备：
+- 变更记录（影响范围、回滚方式）
+- 数据变更向后兼容策略（若有，例如 `migrations/**`）
+- 最小运行说明：如何在干净环境跑通最小链路（Docker Compose；见 0.7）
+
+### 运行方式（本地）
+
+```powershell
+python ci/scripts/release_readiness_gate.py
+```
+
+### 输出产物
+
+脚本会生成：
+- `ci_artifacts/release-readiness-report.json`（必有）
+
+### 本仓库 early-repo 策略
+
+- Gate 8 **始终要求文档存在**：
+  - `RELEASE_NOTES.md`（或 `docs/release-notes.md` 等候选路径）
+  - `docs/runbook/mvp.md`（或 `RUNBOOK.md` / `README.md` 的 `MVP Runbook` 段落）
+- 当仓库还没有 `docker-compose.yml` / `compose.yml` 时：
+  - Gate 8 对“Compose 基线存在性”给出 `PASS (N/A)`，并在报告中提示后续补齐。
+
+### 失败条件（对应 Gate 8 的最小可机器检查子集）
+
+- 缺少变更记录文件，或文件中缺少“影响范围/回滚方式”（关键字可中英文）
+- 缺少最小运行说明（runbook），或 runbook 中缺少 docker compose 启动与 smoke 说明
+- 若本次变更涉及 `migrations/**`：runbook 未说明向后兼容策略与迁移回滚方式
