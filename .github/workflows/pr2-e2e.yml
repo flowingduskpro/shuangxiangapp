@@ -62,7 +62,7 @@ jobs:
       - name: Install Node deps (workspace)
         run: npm ci
 
-      - name: Create PR-2 artifacts skeleton (fixed list)
+      - name: Create PR-2 artifacts skeleton (fixed list J1-J7)
         run: python ci/scripts/create_pr_artifacts_skeleton.py
 
       - name: Prisma generate + migrate deploy
@@ -126,7 +126,7 @@ jobs:
         if: always()
         run: python ci/scripts/generate_pr2_evidence.py
 
-      - name: Validate artifacts exist (J1–J7)
+      - name: Validate artifacts exist (J1-J7)
         if: always()
         run: python ci/scripts/report_validation_gate.py
 
