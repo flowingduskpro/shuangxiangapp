@@ -111,6 +111,7 @@ jobs:
         env:
           GITHUB_BASE_SHA: ${{ github.event.pull_request.base.sha }}
           GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          PR_BODY_FILE_OVERRIDE: ${{ github.workspace }}/ci/preflight-attestation.md
         run: python ci/scripts/preflight.py
 
       - name: Gate 2 - Structure (anti-monolith)
@@ -178,4 +179,3 @@ jobs:
           name: artifacts
           path: artifacts/
           retention-days: 30
-

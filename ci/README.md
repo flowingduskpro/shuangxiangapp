@@ -34,6 +34,11 @@ $env:PR_BODY_FILE = "C:\path\to\pr_body.txt"
 python ci/scripts/preflight.py
 ```
 
+### CI 兜底声明（仅用于 PR 模板缺失时）
+
+- 仓库提供 `ci/preflight-attestation.md` 作为 CI 兜底声明文件。
+- 若需启用该文件，可设置环境变量 `PR_BODY_FILE_OVERRIDE` 指向该文件路径。
+
 ### 输出产物
 
 脚本会生成：

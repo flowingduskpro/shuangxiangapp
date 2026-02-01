@@ -1,0 +1,165 @@
+name: PR-2 E2E (WS main path)
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  pr2_e2e:
+    name: E2E WS → PG → Redis → push aggregate (with trace evidence)
+    runs-on: ubuntu-latest
+    if: ${{ hashFiles('apps/api/package.json') != '' }}
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: shuangxiang
+          POSTGRES_PASSWORD: shuangxiang
+          POSTGRES_DB: shuangxiang
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U shuangxiang -d shuangxiang"
+          --health-interval 3s
+          --health-timeout 3s
+          --health-retries 20
+
+      redis:
+        image: redis:7
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 3s
+          --health-timeout 3s
+          --health-retries 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Python deps (E2E runner)
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests "python-socketio[client]" pyjwt
+
+      - name: Install Node deps (workspace)
+        run: npm ci
+
+      - name: Create PR-2 artifacts skeleton (fixed list J1–J7)
+        run: python ci/scripts/create_pr_artifacts_skeleton.py
+
+      - name: Prisma generate + migrate deploy
+        working-directory: apps/api
+        env:
+          DATABASE_URL: postgresql://shuangxiang:shuangxiang@localhost:5432/shuangxiang
+        run: |
+          npm run prisma:generate
+          npm run prisma:migrate:deploy
+
+      - name: Build API
+        working-directory: apps/api
+        run: npm run build
+
+      - name: Start API
+        working-directory: apps/api
+        env:
+          PORT: '3000'
+          JWT_SECRET: dev-secret
+          DATABASE_URL: postgresql://shuangxiang:shuangxiang@localhost:5432/shuangxiang
+          REDIS_URL: redis://localhost:6379
+          PR2_TRACE_EXPORT_PATH: ${{ github.workspace }}/artifacts/observability/trace-export.json
+        run: |
+          entry=$(node - <<'NODE'
+          const fs = require('fs');
+          const candidates = ['dist/src/main.js', 'dist/main.js'];
+          const found = candidates.find((p) => fs.existsSync(p));
+          if (!found) {
+            console.error('API build entry not found; checked paths: dist/src/main.js, dist/main.js');
+            process.exit(1);
+          }
+          console.log(found);
+          NODE
+          )
+          node "$entry" > ${{ github.workspace }}/artifacts/observability/service-api.log 2>&1 &
+          echo $! > ${{ github.workspace }}/artifacts/observability/api.pid
+
+      - name: Wait for API
+        run: |
+          python - <<'PY'
+          import socket
+          import time
+
+          host = '127.0.0.1'
+          port = 3000
+          ready = False
+          for i in range(60):
+              try:
+                  with socket.create_connection((host, port), timeout=2):
+                      print('API port is open')
+                      ready = True
+                      break
+              except OSError:
+                  time.sleep(1)
+          if ready:
+              raise SystemExit(0)
+          print('API did not become ready within 60 seconds')
+          raise SystemExit(1)
+          PY
+
+      - name: Run PR-2 E2E WS
+        env:
+          PR2_API_BASE: http://localhost:3000
+          PR2_WS_URL: http://localhost:3000
+          JWT_SECRET: dev-secret
+        run: python ci/scripts/run_pr2_e2e_ws.py
+
+      - name: Stop API
+        if: always()
+        run: |
+          if [ -f artifacts/observability/api.pid ]; then kill -INT $(cat artifacts/observability/api.pid) || true; fi
+
+      - name: Generate evidence tree (deps/env)
+        if: always()
+        run: python ci/scripts/generate_pr2_evidence.py
+
+      - name: Validate artifacts exist (J1–J7)
+        if: always()
+        run: python ci/scripts/report_validation_gate.py
+
+      - name: Observability gate (trace chain validation)
+        if: always()
+        run: python ci/scripts/observability_gate.py
+
+      - name: Upload artifacts (PR evidence tree)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: artifacts
+          path: artifacts/
+          retention-days: 30
+
+      - name: Upload ci_artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci_artifacts
+          path: ci_artifacts/
+          retention-days: 30
