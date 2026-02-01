@@ -2,17 +2,17 @@
 
 ## Docker Compose quickstart
 
-> This repo is still bootstrapping. When runtime services land, add a Docker Compose baseline per
-> `memory_bank/implementation-plan.md` section 0.7:
-> Postgres + Redis + API + AI(FastAPI) + smoke script.
+This repo provides a Docker Compose baseline per `memory_bank/implementation-plan.md` section 0.7:
+Postgres + Redis + API.
 
-Planned commands (to be implemented once compose exists):
-- `docker compose up -d`
+Commands:
+- `docker compose -f compose.yml up -d --build`
+- `docker compose -f compose.yml logs -f api`
+- `docker compose -f compose.yml down -v`
 
 ## Smoke test
 
-Planned smoke (to be implemented once services exist):
-- `curl -H "x-correlation-id: <uuid>" http://localhost:<port>/health`
+MVP smoke for PR-2 is WS-based and will be driven by the e2e runner (see `artifacts/runbook/repro-steps.md`).
 
 ## Backward compatibility / 向后兼容策略（若涉及数据变更）
 
@@ -21,5 +21,5 @@ Planned smoke (to be implemented once services exist):
 
 ## Rollback / 回滚方式
 
-- Document rollback steps here (commands + any data implications).
-
+- `docker compose -f compose.yml down -v` (purges local volumes; for MVP only)
+- For DB schema rollback: use expand/contract migrations; do not drop columns in the same PR that introduced them.
