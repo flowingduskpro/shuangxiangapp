@@ -95,13 +95,24 @@ jobs:
         run: |
           python - <<'PY'
           import time
+          import uuid
           import requests
 
           url = 'http://localhost:3000/class-sessions'
           last = None
-          for _ in range(90):
+
+          correlation_id = str(uuid.uuid4())
+          # fixed correlation header + log field token per memory_bank/implementation-plan.md 0.6
+          headers = {
+              'x-correlation-id': correlation_id,
+              'correlation_id': correlation_id,
+              # business key token required by observability gate policy
+              'class_session_id': 'health-probe',
+          }
+
+          for _ in range(120):
               try:
-                  r = requests.post(url, json={'class_id':'health'}, timeout=2)
+                  r = requests.post(url, json={'class_id':'health'}, headers=headers, timeout=2)
                   last = ('ok', r.status_code, r.text[:200])
                   if r.status_code in (200, 201, 400):
                       print('API is up:', r.status_code)
