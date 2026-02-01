@@ -86,27 +86,39 @@ jobs:
           REDIS_URL: redis://localhost:6379
           PR2_TRACE_EXPORT_PATH: ${{ github.workspace }}/artifacts/observability/trace-export.json
         run: |
-          node dist/main.js > ${{ github.workspace }}/artifacts/observability/service-api.log 2>&1 &
+          mkdir -p ${{ github.workspace }}/artifacts/observability
+          node dist/src/main.js > ${{ github.workspace }}/artifacts/observability/service-api.log 2>&1 &
           echo $! > ${{ github.workspace }}/artifacts/observability/api.pid
 
       - name: Wait for API
+        id: wait_api
         run: |
           python - <<'PY'
           import time
           import requests
 
           url = 'http://localhost:3000/class-sessions'
-          for _ in range(60):
+          last = None
+          for _ in range(90):
               try:
                   r = requests.post(url, json={'class_id':'health'}, timeout=2)
+                  last = ('ok', r.status_code, r.text[:200])
                   if r.status_code in (200, 201, 400):
-                      print('API is up')
+                      print('API is up:', r.status_code)
                       raise SystemExit(0)
-              except Exception:
+              except Exception as e:
+                  last = ('err', str(e))
                   time.sleep(1)
 
-          raise SystemExit('API did not become ready in time')
+          print('API did not become ready in time. last=', last)
+          raise SystemExit(1)
           PY
+
+      - name: Tail API logs on failure
+        if: failure()
+        run: |
+          echo "--- service-api.log (tail) ---"
+          tail -n 200 artifacts/observability/service-api.log || true
 
       - name: Run PR-2 E2E WS
         env:
