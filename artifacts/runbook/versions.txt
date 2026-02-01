@@ -1,0 +1,30 @@
+Software Versions
+=================
+Generated: 2026-02-01 12:30:12 UTC
+
+System Information:
+-------------------
+Linux runnervmkj6or 6.11.0-1018-azure #18~24.04.1-Ubuntu SMP Sat Jun 28 04:46:03 UTC 2025 x86_64 x86_64 x86_64 GNU/Linux
+
+Node.js Ecosystem:
+------------------
+v20.20.0
+10.8.2
+
+Backend Dependencies (from package.json):
+-----------------------------------------
+NestJS Core: ^11.1.12
+Prisma: ^7.3.0
+OpenTelemetry SDK: ^0.211.0
+TypeScript: ^5.9.3
+
+Git Information:
+----------------
+git version 2.52.0
+dc263e0e34a37cf395d70762629e3dc3663d357b
+copilot/implement-basic-framework-functionality
+
+Docker:
+-------
+Docker version 28.0.4, build b8034c0
+Docker Compose: Not installed

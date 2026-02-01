@@ -1,0 +1,14 @@
+E2E WebSocket Test Report
+=========================
+Generated: 2026-02-01 12:30:12 UTC
+
+E2E WebSocket tests available in:
+  - apps/backend/test/websocket.e2e-spec.ts
+  - apps/backend/test/event.e2e-spec.ts
+  - apps/backend/test/aggregation.e2e-spec.ts
+
+To run E2E tests: npm run test:e2e
+
+Test client available: test-client/e2e-test.js
+
+Status: TEST_STRUCTURE_DOCUMENTED

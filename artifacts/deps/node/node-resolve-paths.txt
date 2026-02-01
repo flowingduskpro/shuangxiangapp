@@ -1,0 +1,28 @@
+Node.js Dependency Resolve Paths
+=================================
+Generated: 2026-02-01 12:30:02 UTC
+
+Node Modules Location: /home/runner/work/shuangxiangapp/shuangxiangapp/apps/backend/node_modules
+
+Module Resolution Paths:
+----------------------
+[
+  '/home/runner/work/shuangxiangapp/shuangxiangapp/apps/backend/node_modules',
+  '/home/runner/work/shuangxiangapp/shuangxiangapp/apps/node_modules',
+  '/home/runner/work/shuangxiangapp/shuangxiangapp/node_modules',
+  '/home/runner/work/shuangxiangapp/node_modules',
+  '/home/runner/work/node_modules',
+  '/home/runner/node_modules',
+  '/home/node_modules',
+  '/node_modules',
+  '/home/runner/.node_modules',
+  '/home/runner/.node_libraries',
+  '/usr/local/lib/node'
+]
+
+Key Package Locations:
+--------------------
+@nestjs/common -> /home/runner/work/shuangxiangapp/shuangxiangapp/apps/backend/node_modules/@nestjs/common
+@nestjs/core -> /home/runner/work/shuangxiangapp/shuangxiangapp/apps/backend/node_modules/@nestjs/core
+@prisma/client -> /home/runner/work/shuangxiangapp/shuangxiangapp/apps/backend/node_modules/@prisma/client
+@opentelemetry/api -> /home/runner/work/shuangxiangapp/shuangxiangapp/apps/backend/node_modules/@opentelemetry/api

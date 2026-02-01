@@ -1,0 +1,20 @@
+Correlation ID Configuration
+============================
+Generated: 2026-02-01 12:30:12 UTC
+
+Correlation ID Implementation:
+- Trace IDs: OpenTelemetry W3C Trace Context
+- Format: 32-character hexadecimal (128-bit)
+- Header: traceparent
+
+Span ID Implementation:
+- Format: 16-character hexadecimal (64-bit)
+
+Propagation:
+- HTTP Headers: traceparent, tracestate
+- WebSocket: Custom headers in connection handshake
+
+Example Trace Context:
+traceparent: 00-2969de22e7027e445ee12a5c3925b072-076042be86cbf4ea-01
+
+Status: CONFIGURED

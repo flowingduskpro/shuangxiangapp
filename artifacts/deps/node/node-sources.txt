@@ -1,0 +1,57 @@
+Node.js Dependency Sources
+==========================
+Generated: 2026-02-01 12:30:02 UTC
+
+All packages resolve from: registry.npmjs.org
+
+Direct Dependencies (package.json):
+-----------------------------------
+Production:
+  @nestjs/common@^11.1.12
+  @nestjs/config@^4.0.2
+  @nestjs/core@^11.1.12
+  @nestjs/jwt@^11.0.2
+  @nestjs/passport@^11.0.5
+  @nestjs/platform-express@^11.1.12
+  @nestjs/platform-socket.io@^11.1.12
+  @nestjs/websockets@^11.1.12
+  @opentelemetry/api@^1.9.0
+  @opentelemetry/auto-instrumentations-node@^0.69.0
+  @opentelemetry/exporter-trace-otlp-http@^0.211.0
+  @opentelemetry/resources@^2.5.0
+  @opentelemetry/sdk-node@^0.211.0
+  @opentelemetry/sdk-trace-node@^2.5.0
+  @opentelemetry/semantic-conventions@^1.39.0
+  @prisma/client@^7.3.0
+  @types/uuid@^10.0.0
+  class-transformer@^0.5.1
+  class-validator@^0.14.3
+  dotenv@^17.2.3
+  ioredis@^5.9.2
+  passport@^0.7.0
+  passport-jwt@^4.0.1
+  reflect-metadata@^0.2.2
+  rxjs@^7.8.2
+  uuid@^13.0.0
+
+Development:
+  @nestjs/cli@^11.0.16
+  @nestjs/schematics@^11.0.9
+  @nestjs/testing@^11.1.12
+  @types/jest@^30.0.0
+  @types/node@^25.1.0
+  @types/passport-jwt@^4.0.1
+  @types/socket.io-client@^1.4.36
+  @types/supertest@^6.0.3
+  jest@^30.2.0
+  prisma@^7.3.0
+  socket.io-client@^4.8.3
+  supertest@^7.2.2
+  ts-jest@^29.4.6
+  ts-node@^10.9.2
+  typescript@^5.9.3
+
+Registry Information:
+-------------------
+Primary: https://registry.npmjs.org/
+Integrity: SHA-512 checksums in package-lock.json

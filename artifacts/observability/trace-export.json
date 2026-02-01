@@ -1,0 +1,28 @@
+{
+  "traces": [
+    {
+      "traceId": "00000000000000000000000000000000",
+      "spanId": "0000000000000000",
+      "name": "sample-trace",
+      "timestamp": "2026-02-01T12:30:12Z",
+      "duration": 0,
+      "serviceName": "shuangxiangapp-backend",
+      "status": "NOT_RUNNING",
+      "note": "Application must be running to capture live traces. This is a placeholder structure."
+    }
+  ],
+  "metadata": {
+    "exportTime": "2026-02-01T12:30:12Z",
+    "format": "OpenTelemetry",
+    "instrumentation": {
+      "library": "@opentelemetry/sdk-node",
+      "autoInstrumentation": "@opentelemetry/auto-instrumentations-node",
+      "exporter": "@opentelemetry/exporter-trace-otlp-http"
+    },
+    "configuration": {
+      "tracing_enabled": true,
+      "sampling_rate": 1.0,
+      "exporter_endpoint": "configured in environment"
+    }
+  }
+}

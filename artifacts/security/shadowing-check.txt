@@ -1,0 +1,17 @@
+Dependency Shadowing Check
+==========================
+Generated: 2026-02-01 12:30:02 UTC
+
+Checking for dependency shadowing (local packages overriding node_modules)...
+
+✓ No node_modules directories in src/
+
+Checking for potential scope confusion:
+  Similar names: @nestjs/passport, passport
+  Similar names: @types/uuid, uuid
+  Similar names: passport-jwt, @types/passport-jwt
+  Similar names: @types/jest, jest
+  Similar names: @types/socket.io-client, socket.io-client
+  Similar names: @types/supertest, supertest
+
+Status: PASS - No dependency shadowing detected

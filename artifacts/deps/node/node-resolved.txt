@@ -1,0 +1,7 @@
+Node.js Resolved Dependencies
+=============================
+Generated: 2026-02-01 12:30:02 UTC
+
+Source: package-lock.json
+
+Note: Some peer dependency warnings may exist
