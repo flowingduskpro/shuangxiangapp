@@ -102,6 +102,13 @@ def changed_files(base: Optional[str], head: Optional[str]) -> List[str]:
 
 
 def read_pr_body() -> str:
+    # Optional CI override: allow a specific file to supply preflight attestations.
+    override_file = os.environ.get("PR_BODY_FILE_OVERRIDE")
+    if override_file:
+        override_path = Path(override_file)
+        if override_path.exists():
+            return override_path.read_text(encoding="utf-8")
+
     # GitHub Actions: parse the event payload
     event_path = os.environ.get("GITHUB_EVENT_PATH")
     if event_path and Path(event_path).exists():
@@ -301,4 +308,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
-
