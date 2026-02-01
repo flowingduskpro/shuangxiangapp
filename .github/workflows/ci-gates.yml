@@ -56,16 +56,8 @@ jobs:
           GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: python ci/scripts/release_readiness_gate.py
 
-      - name: Map ci_artifacts into PR artifacts (minimal)
-        shell: bash
-        run: |
-          set -euo pipefail
-          mkdir -p ci_artifacts
-
-          # Best-effort mapping so PR artifacts have some real content early.
-          if [ -f ci_artifacts/dependency-audit.md ]; then
-            cp -f ci_artifacts/dependency-audit.md artifacts/audit/dependency-integrity-report.md
-          fi
+      - name: Generate PR-2 evidence tree (artifacts/*)
+        run: python ci/scripts/generate_pr2_evidence.py
 
       - name: Validate PR-2 artifacts exist (J1–J7)
         run: python ci/scripts/report_validation_gate.py
@@ -85,4 +77,3 @@ jobs:
           name: artifacts
           path: artifacts/
           retention-days: 30
-
