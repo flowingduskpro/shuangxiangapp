@@ -1,0 +1,24 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+*.iml
+
+# CI artifacts (generated)
+ci_artifacts/*.json
+ci_artifacts/*.md
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+
+# Node
+node_modules/
+
+# Flutter/Dart
+.dart_tool/
+build/
+

@@ -1,0 +1,38 @@
+name: gates
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  preflight:
+    name: Gate 2 - Preflight
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Run preflight
+        env:
+          GITHUB_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          python ci/scripts/preflight.py
+
+      - name: Upload ci_artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci_artifacts
+          path: ci_artifacts/
+          retention-days: 30
+
