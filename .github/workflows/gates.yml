@@ -28,6 +28,10 @@ jobs:
         run: |
           python ci/scripts/preflight.py
 
+      - name: Run dependency integrity gate
+        run: |
+          python ci/scripts/dependency_gate.py
+
       - name: Upload ci_artifacts
         if: always()
         uses: actions/upload-artifact@v4
@@ -35,4 +39,3 @@ jobs:
           name: ci_artifacts
           path: ci_artifacts/
           retention-days: 30
-

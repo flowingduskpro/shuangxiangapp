@@ -64,3 +64,22 @@ python ci/scripts/structure_gate.py
 
 脚本会生成：
 - `ci_artifacts/structure-report.json`（必有）
+
+## Gate 4 (Dependency Integrity) - 本地运行
+
+Gate 4 会生成《依赖完整性审计报告》：
+- `ci_artifacts/dependency-audit.md`（必有）
+
+说明：当前仓库可能尚未落地 apps/services 真实代码与依赖清单；在“无依赖清单文件”的阶段，Gate 4 会输出 N/A 并通过，但仍会生成可追溯的审计报告。
+
+### 运行方式（本地）
+
+```powershell
+python ci/scripts/dependency_gate.py
+```
+
+### 失败条件（对应该 Gate 4）
+
+- 发现依赖清单（例如 `pubspec.yaml` / `package.json` / `requirements.txt` / `pyproject.toml`），但缺少对应的锁定/可复现机制（例如 `pubspec.lock` / Node lockfile / Python lockfile 或严格 pin）。
+
+> 更完整的约束与证据格式，以 `memory_bank/implementation-plan.md` 第 4 节为准。
